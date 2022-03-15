@@ -14,7 +14,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-console.log(uri);
+// console.log(uri);
 
 async function run() {
     try {
@@ -26,7 +26,17 @@ async function run() {
             const cursor = storiesCollection.find({});
             const stories = await cursor.toArray();
             res.json(stories);
-        })
+        });
+        app.post('/stories', async (req, res) => {
+            const newBlog = req.body;
+            const result = await storiesCollection.insertOne(newBlog);
+            // console.log(newBlog);
+            res.json(result)
+        });
+        app.delete('/stories', async (req, res) => {
+            const result = await storiesCollection.deleteMany({});
+            res.json(result);
+        });
     }
     finally {
         // await client.close();
